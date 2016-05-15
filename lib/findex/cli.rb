@@ -7,7 +7,8 @@ module Findex
 
     def initialize(args)
       query_separator_index = args.find_index('--') || -1
-      action, path = args[0..query_separator_index]
+      action = args[0]
+      path = query_separator_index != 1 ? args[1] : nil
 
       case action
       when 'index' then index(path || '.')
