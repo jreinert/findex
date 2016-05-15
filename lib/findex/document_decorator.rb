@@ -73,7 +73,7 @@ module Findex
 
     def value(slot)
       return super if slot.is_a?(Integer)
-      super(VALUE_SLOTS[slot])
+      super(VALUE_SLOTS[slot]).force_encoding('UTF-8')
     end
 
     def add_value(slot, value)
