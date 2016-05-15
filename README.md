@@ -6,7 +6,7 @@ customization via a simple DSL.
 
 ## Installation
 
-    $ gem install findex
+    $ gem install xapian-findex
 
 ## Usage
 

@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'findex/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'findex'
+  spec.name          = 'xapian-findex'
   spec.version       = Findex::VERSION
   spec.authors       = ['Joakim Reinert']
   spec.email         = ['mail@jreinert.com']
