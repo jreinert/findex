@@ -8,6 +8,11 @@ customization via a simple DSL.
 
     $ gem install xapian-findex
 
+### Dependencies
+
+- xapian-core
+- libmagic
+
 ## Usage
 
 ### Indexing
