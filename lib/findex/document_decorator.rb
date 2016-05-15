@@ -101,7 +101,7 @@ module Findex
       update_values_from(full_path)
       clear_terms
       term_generator.document = xapian_document
-      index_text(TermGeneratorDecorator.new(term_generator))
+      index_text(TermGeneratorDecorator.new(term_generator, self))
     end
 
     def index_text(term_generator)

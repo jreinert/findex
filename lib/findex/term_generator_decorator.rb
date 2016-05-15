@@ -1,8 +1,9 @@
 module Findex
   class TermGeneratorDecorator < SimpleDelegator
-    def initialize(term_generator)
+    def initialize(term_generator, document)
       @term_generator = term_generator
-      super
+      @document = document
+      super(term_generator)
     end
 
     def []=(prefix, text)
@@ -13,6 +14,10 @@ module Findex
 
     def <<(text)
       self[nil] = text
+    end
+
+    def date=(date)
+      @document.date = date
     end
   end
 end
