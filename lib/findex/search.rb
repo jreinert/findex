@@ -9,6 +9,7 @@ module Findex
     def query(query_terms)
       enquire = Xapian::Enquire.new(@db)
       add_prefixes(query_terms)
+      add_value_range_processors
       query_terms.map! { |term| term =~ /\s+/ ? %("#{term}") : term }
       enquire.query = @query_parser.parse_query(query_terms.join(' '))
       mset = enquire.mset(0, @db.doccount)
@@ -30,6 +31,15 @@ module Findex
         prefix = match[:prefix]
         @query_parser.add_prefix(prefix, "X#{prefix}".upcase)
       end
+    end
+
+    def add_value_range_processors
+      date_processor = Xapian::DateValueRangeProcessor.new(
+        DocumentDecorator::VALUE_SLOTS[:date],
+        'date:',
+        true
+      )
+      @query_parser.add_valuerangeprocessor(date_processor)
     end
 
     def setup
