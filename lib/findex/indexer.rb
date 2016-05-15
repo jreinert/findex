@@ -29,7 +29,8 @@ module Findex
     def insert(file)
       xapian_document = Xapian::Document.new
       document = DocumentDecorator.new(xapian_document, @root_path, file)
-      document.insert(db, term_generator)
+      Findex.logger.info("adding '#{document.path}' to the index")
+      document.insert(@db, @term_generator)
     end
 
     def files
@@ -43,18 +44,17 @@ module Findex
     end
 
     def refresh_existing
-      processed_paths = []
-
-      documents.each do |document|
+      documents.map do |document|
         if document.deleted?
+          Findex.logger.info("deleting '#{document.path}' from index")
           @db.delete_document(document.docid)
         elsif document.changed?
+          Findex.logger.info("updating '#{document.path}'")
           document.update(@db, @term_generator)
-          processed_paths << document.full_path
         end
-      end
 
-      processed_paths
+        document.full_path
+      end
     end
 
     def documents
@@ -66,18 +66,6 @@ module Findex
           y << DocumentDecorator.new(match.document, @root_path)
         end
       end
-    end
-
-    def index(path)
-      return index_file(path) if File.file?(path)
-      return index_dir(path) if File.directory?(path)
-    end
-
-    def index_file(path)
-    end
-
-    def index_dir(path)
-      Dir[File.join(path, '*')].each(&method(:index))
     end
 
     def setup

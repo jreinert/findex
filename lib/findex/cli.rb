@@ -1,4 +1,5 @@
 require_relative './indexer'
+require_relative './search'
 
 module Findex
   class Cli
@@ -9,10 +10,21 @@ module Findex
       action, path = args[0..query_separator_index]
 
       case action
-      when 'index' then Indexer.new(path || '.').start
+      when 'index' then index(path || '.')
       when 'search'
-        query = args[query_separator_index..-1] || []
+        abort(USAGE) if query_separator_index == -1
+        search(path, args[query_separator_index..-1])
       else abort("Unsupported action '#{action}'\n#{USAGE}")
+      end
+    end
+
+    def index(path)
+      Indexer.new(path || '.').start
+    end
+
+    def search(path, query_terms)
+      Search.new(path || '.').query(query_terms).each do |document|
+        puts document.full_path
       end
     end
   end

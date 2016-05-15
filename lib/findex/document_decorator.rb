@@ -2,6 +2,7 @@ require 'time'
 require 'date'
 require 'xapian'
 require_relative './file_indexer'
+require_relative './term_generator_decorator'
 
 module Findex
   # A decorator class to be used around Xapian::Documents
@@ -19,7 +20,7 @@ module Findex
     def initialize(xapian_document, root_path, file = nil)
       @xapian_document = xapian_document
       @root_path = root_path
-      super
+      super(xapian_document)
       update_values_from(file) if file
     end
 
@@ -34,6 +35,10 @@ module Findex
 
     def mtime
       @mtime ||= Time.strptime(value(:mtime), TIME_FORMAT)
+    end
+
+    def actual_mtime
+      Time.at(full_path.mtime.to_i)
     end
 
     def mtime=(time)
@@ -55,11 +60,11 @@ module Findex
     end
 
     def deleted?
-      !exists
+      !exists?
     end
 
     def changed?
-      full_path.mtime > mtime
+      actual_mtime > mtime
     end
 
     def extension
@@ -93,21 +98,21 @@ module Findex
     private
 
     def index(term_generator)
-      update_values_from(path)
+      update_values_from(full_path)
+      clear_terms
       term_generator.document = xapian_document
-      term_generator.clear_terms
       index_text(TermGeneratorDecorator.new(term_generator))
     end
 
     def index_text(term_generator)
-      file_indexer = FileIndexer.new(real_path)
+      file_indexer = FileIndexer.new(full_path)
       term_generator[:path] = path
       file_indexer.index(term_generator)
     end
 
     def update_values_from(file)
       self.path = file.relative_path_from(@root_path)
-      self.mtime = real_path.mtime
+      self.mtime = full_path.mtime
       self.date = mtime.to_date
     end
   end

@@ -1,4 +1,5 @@
 require_relative './index'
+require 'filemagic'
 
 module Findex
   class FileIndexer
@@ -8,11 +9,11 @@ module Findex
 
     def initialize(file)
       @file = file
-      @extension = File.extname(file)[1..-1]
+      @mime = FileMagic.open(:mime_type) { |magic| magic.file(file.to_s) }
     end
 
     def index(term_generator)
-      indexer = Findex.definitions[@extension] || TEXT_INDEXER
+      indexer = Findex.definitions[@mime] || TEXT_INDEXER
       indexer.call(@file, term_generator)
     end
   end

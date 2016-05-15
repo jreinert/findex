@@ -1,12 +1,13 @@
 module Findex
-  class TermGeneratorDecorator
+  class TermGeneratorDecorator < SimpleDelegator
     def initialize(term_generator)
       @term_generator = term_generator
+      super
     end
 
     def []=(prefix, text)
-      prefix = prefix ? "X#{prefix}".upcase : nil
-      @term_generator.index_text(text, 1, prefix)
+      prefix = prefix ? "X#{prefix}".upcase : ''
+      @term_generator.index_text(text.to_s, 1, prefix)
       @term_generator.increase_termpos
     end
 

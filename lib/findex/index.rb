@@ -1,3 +1,4 @@
+require 'logger'
 require_relative './dsl'
 
 module Findex
@@ -14,5 +15,11 @@ module Findex
 
   def self.config
     @config
+  end
+
+  def self.logger
+    @logger ||= Logger.new(STDOUT).tap do |logger|
+      logger.level = config.log_level
+    end
   end
 end
