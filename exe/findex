@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require 'findex/cli'
+
+Findex::Cli.new(ARGV)
