@@ -43,7 +43,9 @@ Below are the available options for Findex with their defaults. It should give
 you an idea how to change them to fit your needs.
 
 ``` ruby
-indexer.stem_language = 'none'
+indexer.config do |config|
+    config.stem_language = 'none'
+end
 ```
 
 ### Mimetypes
